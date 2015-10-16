@@ -6,28 +6,44 @@ import java.util.StringTokenizer;
  */
 public class IdfCalculator {
 
-    public double calculateTfIdfForDocuments(String s, File[] files) throws IOException {
+    public static double calculateTfIdfForDocuments(String s, File[] files, File selectedFile) throws IOException {
+        long n = files.length;
+        long termFrequency = 0;
+        long numberOfDocumentsWithTerm = 0;
         for (File file : files)
         {
-            BufferedReader reader = new BufferedReader(new FileReader(file));
-
-            String line = reader.readLine();
-            while(line !=  null)
+            long termInFiles = doesDocumentHaveTerm(s, file);
+            if (termInFiles > 0)
             {
-                line = reader.readLine();
-                StringTokenizer tokenizer = new StringTokenizer(line);
-
-                while(tokenizer.hasMoreTokens() )
+                if (file.equals(selectedFile))
                 {
-                    String word = tokenizer.nextToken();
-                    if (s.equals(word)){
-                        
-                    }
+                    termFrequency = termInFiles;
+                }
+                numberOfDocumentsWithTerm++;
+            }
+        }
+        double idf = Math.log10((double)n/(double)numberOfDocumentsWithTerm);
+        return termFrequency * idf;
+    }
+
+    private static long doesDocumentHaveTerm(String s, File file) throws IOException {
+        BufferedReader reader = new BufferedReader(new FileReader(file));
+        long termFrequency = 0;
+        String line = reader.readLine();
+        while(line !=  null)
+        {
+            StringTokenizer tokenizer = new StringTokenizer(line);
+
+            while(tokenizer.hasMoreTokens() )
+            {
+                String word = tokenizer.nextToken();
+                if (s.equals(word)){
+                    termFrequency++;
                 }
             }
-
-            reader.close();
+            line = reader.readLine();
         }
-
+        reader.close();
+        return termFrequency;
     }
 }
