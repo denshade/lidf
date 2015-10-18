@@ -18,7 +18,9 @@ public class IdfCalculatorTest {
         writer.write("example this is another example another example");
         writer.close();
 
-        double result = IdfCalculator.calculateTfIdfForDocuments("example", new File[]{file1, file2}, file2);
+        double result = SingleIdfCalculator.calculateTfIdfForDocuments("example", new File[]{file1, file2}, file2);
         assertEquals(0.9030, result, 0.001);
+        file1.delete();
+        file2.delete();
     }
 }
