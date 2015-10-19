@@ -1,4 +1,6 @@
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -8,7 +10,7 @@ import java.util.TreeSet;
 public class IdfCouple
 {
     public String word;
-    public long frequency;
+    public Map<File,Long> frequency = new HashMap<File, Long>();
     public Set<File> usedInDocuments = new TreeSet<File>();
 
     public double getIdf(int totalNrDocuments)
@@ -16,9 +18,10 @@ public class IdfCouple
         return Math.log10((double)totalNrDocuments/(double)usedInDocuments.size());
     }
 
-    public double getTfIdf(int totalNrDocuments)
+    public double getTfIdf(File currentFile, int totalNrDocuments)
     {
-        return frequency * getIdf(totalNrDocuments);
+        if (!frequency.containsKey(currentFile)) return 0;
+        return frequency.get(currentFile) * getIdf(totalNrDocuments);
     }
 
 }

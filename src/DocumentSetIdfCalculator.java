@@ -19,6 +19,27 @@ public class DocumentSetIdfCalculator
         return report;
     }
 
+    public String[] getTagsForFileInDirectory(File file) throws IOException {
+        File directory = file.getParentFile();
+        File[] textfiles = directory.listFiles(new FileFilter() {
+            @Override
+            public boolean accept(File pathname) {
+                return pathname.toString().endsWith(".txt");
+            }
+        });
+        IdfTfReport report = getCouples(textfiles);
+        List<IdfCouple> couples = report.getPopularTermsForDocument(file);
+        List<String> tags = new ArrayList<String>();
+        for (IdfCouple couple : couples)
+        {
+            tags.add(couple.word);
+        }
+        int startTag = tags.size() - 10 < 0 ? 0 : tags.size() - 10;
+        tags = tags.subList(startTag, tags.size() - 1);
+        String[] a = new String[0];
+        return tags.toArray(a);
+    }
+
     private void processDocument(File file) throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader(file));
         String line = reader.readLine();
@@ -31,11 +52,22 @@ public class DocumentSetIdfCalculator
                 String word = tokenizer.nextToken();
                 if (terms.containsKey(word)) {
                     terms.get(word).usedInDocuments.add(file);
-                    terms.get(word).frequency++;
+                    Long l = terms.get(word).frequency.get(file);
+
+                    if (terms.get(word).frequency != null)
+                    {
+                        if (l == null) {
+                            l = 0L;
+                        }
+                        terms.get(word).frequency.put(file, l + 1);
+                    } else {
+                        System.out.println("d");
+                    }
+
                 } else {
                     IdfCouple couple = new IdfCouple();
                     couple.word = word;
-                    couple.frequency = 1;
+                    couple.frequency.put(file, 1L);
                     couple.usedInDocuments.add(file);
                     terms.put(word, couple);
                 }

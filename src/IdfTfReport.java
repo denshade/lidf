@@ -18,12 +18,13 @@ public class IdfTfReport
     {
         List<IdfCouple> termsList = new ArrayList<IdfCouple>(terms.values());
         final int nrOfDocs = nrOfDocuments;
+        final File currentFile = file;
         Collections.sort(termsList, new Comparator<IdfCouple>() {
 
             @Override
             public int compare(IdfCouple o1, IdfCouple o2) {
-                double doc1 = o1.getTfIdf(nrOfDocs);
-                double doc2 = o2.getTfIdf(nrOfDocs);
+                double doc1 = o1.getTfIdf(currentFile, nrOfDocs);
+                double doc2 = o2.getTfIdf(currentFile, nrOfDocs);
                 if (doc1 < doc2) {
                     return -1;
                 } else if(doc1 == doc2) {
@@ -33,6 +34,12 @@ public class IdfTfReport
             }
 
         });
-        return termsList;
+        List<IdfCouple> selectedCouples = new ArrayList<IdfCouple>();
+        for (IdfCouple couple : termsList)
+        {
+            if (couple.usedInDocuments.contains(file))
+                selectedCouples.add(couple);
+        }
+        return selectedCouples;
     }
 }

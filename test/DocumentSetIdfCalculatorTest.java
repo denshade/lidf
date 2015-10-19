@@ -2,6 +2,7 @@ import junit.framework.TestCase;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -23,6 +24,20 @@ public class DocumentSetIdfCalculatorTest extends TestCase {
         writer.close();
         DocumentSetIdfCalculator calc = new DocumentSetIdfCalculator();
         Map<String, IdfCouple> map = calc.getCouples(new File[]{file1, file2}).terms;
-        assertEquals(0.9030, map.get("example").getTfIdf(2), 0.001);
+        assertEquals(0.9030, map.get("example").getTfIdf(file2, 2), 0.001);
+    }
+
+    public void testDocumentRetrieval() throws IOException {
+        File file1 = File.createTempFile("test", ".txt");
+        FileWriter writer = new FileWriter(file1);
+        writer.write("this is a sample a");
+        writer.close();
+        File file2 = File.createTempFile("test", ".txt");
+        writer = new FileWriter(file2);
+        writer.write("example this is another example another example");
+        writer.close();
+        DocumentSetIdfCalculator calc = new DocumentSetIdfCalculator();
+        String[] str = calc.getTagsForFileInDirectory(file2);
+
     }
 }
