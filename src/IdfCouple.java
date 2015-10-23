@@ -20,7 +20,21 @@ public class IdfCouple
 
     public Long getFrequencyForFile(File currentFile)
     {
+        if (!frequency.containsKey(currentFile) || frequency.get(currentFile) == 0)
+            return 0L;
         return frequency.get(currentFile);
+    }
+    public Long getBooleanFrequencyForFile(File currentFile)
+    {
+        if (!frequency.containsKey(currentFile) || frequency.get(currentFile) == 0)
+            return 0L;
+        return frequency.get(currentFile) > 0? 1L:0L;
+    }
+    public Long getLogFrequencyForFile(File currentFile)
+    {
+        if (!frequency.containsKey(currentFile) || frequency.get(currentFile) == 0)
+            return 0L;
+        return frequency.get(currentFile) ;
     }
 
     public void bumpFrequency(File file)
@@ -40,7 +54,8 @@ public class IdfCouple
     public double getTfIdf(File currentFile, int totalNrDocuments)
     {
         if (!frequency.containsKey(currentFile)) return 0;
-        return frequency.get(currentFile) * getIdf(totalNrDocuments);
+//        return frequency.get(currentFile) * getIdf(totalNrDocuments);
+        return getLogFrequencyForFile(currentFile) * getIdf(totalNrDocuments);
     }
 
 }

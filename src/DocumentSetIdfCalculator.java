@@ -36,15 +36,11 @@ public class DocumentSetIdfCalculator
         });
         IdfTfReport report = getCouples(textfiles);
         List<Top3Terms> items = new ArrayList<Top3Terms>();
-        for (File file : directory.listFiles(new FileFilter() {
-            @Override
-            public boolean accept(File pathname) {
-                return pathname.getAbsolutePath().endsWith(".txt");
-            }
-        }))
+        for (File file : textfiles)
         {
             Top3Terms term = new Top3Terms();
             term.filename = file.getCanonicalPath();
+            System.out.println(report.toString(file));
             String[] top3Terms = report.getTopTermsForDocument(file, 3);
             if (top3Terms.length > 0)
                 term.term1 = top3Terms[0];
