@@ -25,6 +25,8 @@ public class DocumentSetIdfCalculatorTest extends TestCase {
         DocumentSetIdfCalculator calc = new DocumentSetIdfCalculator();
         Map<String, IdfCouple> map = calc.getCouples(new File[]{file1, file2}).terms;
         assertEquals(0.9030, map.get("example").getTfIdf(file2, 2), 0.001);
+        file1.delete();
+        file2.delete();
     }
 
     public void testDocumentRetrieval() throws IOException {
@@ -38,6 +40,8 @@ public class DocumentSetIdfCalculatorTest extends TestCase {
         writer.close();
         DocumentSetIdfCalculator calc = new DocumentSetIdfCalculator();
         String[] str = calc.getTagsForFileInDirectory(file2);
-
+        assertEquals("example", str[0]);
+        file1.delete();
+        file2.delete();
     }
 }

@@ -35,7 +35,7 @@ public class DocumentSetIdfCalculator
             tags.add(couple.word);
         }
         int startTag = tags.size() - 10 < 0 ? 0 : tags.size() - 10;
-        tags = tags.subList(startTag, tags.size() - 1);
+        tags = tags.subList(startTag, tags.size());
         String[] a = new String[0];
         return tags.toArray(a);
     }

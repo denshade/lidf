@@ -25,7 +25,7 @@ public class IdfTfReport
             public int compare(IdfCouple o1, IdfCouple o2) {
                 double doc1 = o1.getTfIdf(currentFile, nrOfDocs);
                 double doc2 = o2.getTfIdf(currentFile, nrOfDocs);
-                if (doc1 < doc2) {
+                if (doc1 > doc2) {
                     return -1;
                 } else if(doc1 == doc2) {
                     return 0;
