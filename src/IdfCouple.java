@@ -10,12 +10,31 @@ import java.util.TreeSet;
 public class IdfCouple
 {
     public String word;
-    public Map<File,Long> frequency = new HashMap<File, Long>();
+    private Map<File,Long> frequency = new HashMap<File, Long>();
     public Set<File> usedInDocuments = new TreeSet<File>();
 
     public double getIdf(int totalNrDocuments)
     {
         return Math.log10((double)totalNrDocuments/(double)usedInDocuments.size());
+    }
+
+    public Long getFrequencyForFile(File currentFile)
+    {
+        return frequency.get(currentFile);
+    }
+
+    public void bumpFrequency(File file)
+    {
+        Long l = getFrequencyForFile(file);
+
+        if (frequency != null)
+        {
+            if (l == null) {
+                l = 0L;
+            }
+            frequency.put(file, l + 1);
+        }
+        usedInDocuments.add(file);
     }
 
     public double getTfIdf(File currentFile, int totalNrDocuments)

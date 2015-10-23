@@ -6,6 +6,14 @@ import java.util.*;
  */
 public class DocumentSetIdfCalculator
 {
+    private class Top3Terms
+    {
+        String filename;
+        String term1;
+        String term2;
+        String term3;
+    }
+
     Map<String, IdfCouple> terms = new HashMap<String, IdfCouple>();
 
     public IdfTfReport getCouples(File[] files) throws IOException {
@@ -19,6 +27,36 @@ public class DocumentSetIdfCalculator
         return report;
     }
 
+    public Top3Terms[] getTagsForFilesInDirectory(File directory) throws IOException {
+        File[] textfiles = directory.listFiles(new FileFilter() {
+            @Override
+            public boolean accept(File pathname) {
+                return pathname.toString().endsWith(".txt");
+            }
+        });
+        IdfTfReport report = getCouples(textfiles);
+        List<Top3Terms> items = new ArrayList<Top3Terms>();
+        for (File file : directory.listFiles(new FileFilter() {
+            @Override
+            public boolean accept(File pathname) {
+                return pathname.getAbsolutePath().endsWith(".txt");
+            }
+        }))
+        {
+            Top3Terms term = new Top3Terms();
+            term.filename = file.getCanonicalPath();
+            String[] top3Terms = report.getTopTermsForDocument(file, 3);
+            if (top3Terms.length > 0)
+                term.term1 = top3Terms[0];
+            if (top3Terms.length > 1)
+                term.term2 = top3Terms[1];
+            if (top3Terms.length > 2)
+                term.term3 = top3Terms[2];
+            items.add(term);
+        }
+        return items.toArray(new Top3Terms[items.size()]);
+    }
+
     public String[] getTagsForFileInDirectory(File file) throws IOException {
         File directory = file.getParentFile();
         File[] textfiles = directory.listFiles(new FileFilter() {
@@ -28,16 +66,7 @@ public class DocumentSetIdfCalculator
             }
         });
         IdfTfReport report = getCouples(textfiles);
-        List<IdfCouple> couples = report.getPopularTermsForDocument(file);
-        List<String> tags = new ArrayList<String>();
-        for (IdfCouple couple : couples)
-        {
-            tags.add(couple.word);
-        }
-        int startTag = tags.size() - 10 < 0 ? 0 : tags.size() - 10;
-        tags = tags.subList(startTag, tags.size());
-        String[] a = new String[0];
-        return tags.toArray(a);
+        return report.getTopTermsForDocument(file, 10);
     }
 
     private void processDocument(File file) throws IOException {
@@ -51,29 +80,36 @@ public class DocumentSetIdfCalculator
             {
                 String word = tokenizer.nextToken();
                 if (terms.containsKey(word)) {
-                    terms.get(word).usedInDocuments.add(file);
-                    Long l = terms.get(word).frequency.get(file);
-
-                    if (terms.get(word).frequency != null)
-                    {
-                        if (l == null) {
-                            l = 0L;
-                        }
-                        terms.get(word).frequency.put(file, l + 1);
-                    } else {
-                        System.out.println("d");
-                    }
-
+                    terms.get(word).bumpFrequency(file);
                 } else {
                     IdfCouple couple = new IdfCouple();
                     couple.word = word;
-                    couple.frequency.put(file, 1L);
-                    couple.usedInDocuments.add(file);
+                    couple.bumpFrequency(file);
                     terms.put(word, couple);
                 }
             }
             line = reader.readLine();
         }
         reader.close();
+    }
+
+    public static void main(String[] argv) throws IOException {
+        if (argv.length != 1)
+        {
+            System.out.println("Usage: <directory>");
+            System.exit(2);
+        }
+        DocumentSetIdfCalculator calculator = new DocumentSetIdfCalculator();
+        File file = new File(argv[0]);
+        if (!file.exists()) {
+            System.out.println("File not found "+ file);
+            System.exit(3);
+        }
+        Top3Terms[] terms = calculator.getTagsForFilesInDirectory(file);
+        System.out.println("filename;topterm1;topterm2;topterm3");
+        for (Top3Terms term : terms){
+            if (term != null)
+                System.out.println(term.filename+";"+term.term1+";"+term.term2+";"+term.term3);
+        }
     }
 }

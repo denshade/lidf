@@ -42,4 +42,18 @@ public class IdfTfReport
         }
         return selectedCouples;
     }
+
+    public String[] getTopTermsForDocument(File file, int count)
+    {
+        List<IdfCouple> couples = getPopularTermsForDocument(file);
+        List<String> tags = new ArrayList<String>();
+        for (IdfCouple couple : couples)
+        {
+            tags.add(couple.word);
+        }
+        int startTag = tags.size() - count < 0 ? 0 : tags.size() - count;
+        tags = tags.subList(startTag, tags.size());
+        String[] a = new String[tags.size()];
+        return tags.toArray(a);
+    }
 }
