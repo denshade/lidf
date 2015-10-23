@@ -70,7 +70,7 @@ public class DocumentSetIdfCalculator
         String line = reader.readLine();
         while(line !=  null)
         {
-            StringTokenizer tokenizer = new StringTokenizer(line);
+            StringTokenizer tokenizer = new StringTokenizer(line, " ,();[]");
 
             while(tokenizer.hasMoreTokens() )
             {
