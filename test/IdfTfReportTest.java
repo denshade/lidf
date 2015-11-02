@@ -6,13 +6,21 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-/**
- * Created by Lieven on 18/10/2015.
- */
 public class IdfTfReportTest extends TestCase {
 
     public void testGetIdfTfForTerm() throws Exception {
 
+    }
+
+    public void testToString()
+    {
+        IdfTfReport report = new IdfTfReport();
+        IdfCouple couple = new IdfCouple();
+        couple.word = "example";
+        File file = new File("file1");
+        couple.usedInDocuments.add(file);
+        report.terms.put("example", couple);
+        assertEquals("", report.toString(file));
     }
 
     public void testGetPopularTermsForDocument() throws Exception {

@@ -35,6 +35,12 @@ public class IdfTfReport {
         return selectedCouples;
     }
 
+    /**
+     *
+     * @param file The selected file.
+     * @param count The count of the amount of parameters.
+     * @return String[] most popular terms sorted. Most important last.
+     */
     public String[] getTopTermsForDocument(File file, int count) {
         List<IdfCouple> couples = getPopularTermsForDocument(file);
         List<String> tags = new ArrayList<String>();

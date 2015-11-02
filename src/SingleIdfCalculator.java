@@ -1,9 +1,6 @@
 import java.io.*;
 import java.util.StringTokenizer;
 
-/**
- * Created by Lieven on 16/10/2015.
- */
 public class SingleIdfCalculator {
 
     public static double calculateTfIdfForDocuments(String s, File[] files, File selectedFile) throws IOException {

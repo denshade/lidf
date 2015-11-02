@@ -40,8 +40,17 @@ public class DocumentSetIdfCalculatorTest extends TestCase {
         writer.close();
         DocumentSetIdfCalculator calc = new DocumentSetIdfCalculator();
         String[] str = calc.getTagsForFileInDirectory(file2);
-        assertEquals("example", str[0]);
+        assertEquals("example", str[3]);
         file1.delete();
         file2.delete();
+    }
+
+    public void testgetTagsForFilesInDirectory() throws IOException {
+        File file2 = File.createTempFile("test", ".txt");
+        FileWriter writer = new FileWriter(file2);
+        writer.write("example this is another example another example");
+        writer.close();
+        DocumentSetIdfCalculator calc = new DocumentSetIdfCalculator();
+        assertNotNull(calc.getTagsForFilesInDirectory(file2.getParentFile()));
     }
 }

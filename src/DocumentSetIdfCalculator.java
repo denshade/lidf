@@ -6,6 +6,9 @@ import java.util.*;
  */
 public class DocumentSetIdfCalculator
 {
+
+    Map<String, IdfCouple> terms = new HashMap<String, IdfCouple>();
+
     private class Top3Terms
     {
         String filename;
@@ -13,8 +16,6 @@ public class DocumentSetIdfCalculator
         String term2;
         String term3;
     }
-
-    Map<String, IdfCouple> terms = new HashMap<String, IdfCouple>();
 
     public IdfTfReport getCouples(File[] files) throws IOException {
         for (File current: files)
@@ -28,19 +29,13 @@ public class DocumentSetIdfCalculator
     }
 
     public Top3Terms[] getTagsForFilesInDirectory(File directory) throws IOException {
-        File[] textfiles = directory.listFiles(new FileFilter() {
-            @Override
-            public boolean accept(File pathname) {
-                return pathname.toString().endsWith(".txt");
-            }
-        });
-        IdfTfReport report = getCouples(textfiles);
+        File[] textFiles = TextFileFilter.getTextFiles(directory);
+        IdfTfReport report = getCouples(textFiles);
         List<Top3Terms> items = new ArrayList<Top3Terms>();
-        for (File file : textfiles)
+        for (File file : textFiles)
         {
             Top3Terms term = new Top3Terms();
             term.filename = file.getCanonicalPath();
-            System.out.println(report.toString(file));
             String[] top3Terms = report.getTopTermsForDocument(file, 3);
             if (top3Terms.length > 0)
                 term.term1 = top3Terms[0];
@@ -55,13 +50,8 @@ public class DocumentSetIdfCalculator
 
     public String[] getTagsForFileInDirectory(File file) throws IOException {
         File directory = file.getParentFile();
-        File[] textfiles = directory.listFiles(new FileFilter() {
-            @Override
-            public boolean accept(File pathname) {
-                return pathname.toString().endsWith(".txt");
-            }
-        });
-        IdfTfReport report = getCouples(textfiles);
+        File[] textFiles = TextFileFilter.getTextFiles(directory);
+        IdfTfReport report = getCouples(textFiles);
         return report.getTopTermsForDocument(file, 10);
     }
 
