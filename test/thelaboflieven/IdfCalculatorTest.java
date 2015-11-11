@@ -1,4 +1,7 @@
+package thelaboflieven;
+
 import org.junit.Test;
+import thelaboflieven.SingleIdfCalculator;
 
 import java.io.File;
 import java.io.FileWriter;

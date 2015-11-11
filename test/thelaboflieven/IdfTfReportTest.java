@@ -1,4 +1,9 @@
+package thelaboflieven;
+
 import junit.framework.TestCase;
+import thelaboflieven.DocumentSetIdfCalculator;
+import thelaboflieven.IdfCouple;
+import thelaboflieven.IdfTfReport;
 
 import java.io.File;
 import java.io.FileWriter;

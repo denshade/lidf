@@ -1,9 +1,10 @@
+package thelaboflieven;
+
 import org.junit.Test;
+import thelaboflieven.CachedTagProcessor;
 
 import java.io.File;
 import java.io.FileWriter;
-
-import static org.junit.Assert.*;
 
 public class CachedTagProcessorTest {
 

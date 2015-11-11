@@ -1,9 +1,12 @@
+package thelaboflieven;
+
 import junit.framework.TestCase;
+import thelaboflieven.DocumentSetIdfCalculator;
+import thelaboflieven.IdfCouple;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
