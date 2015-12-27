@@ -1,5 +1,7 @@
 package thelaboflieven;
 
+import thelaboflieven.lidf.TextExtractor;
+
 import java.io.*;
 import java.util.HashMap;
 import java.util.StringTokenizer;
@@ -24,7 +26,7 @@ public class CachedTagProcessor
         }
         File[] textFiles = TextFileFilter.getTextFiles(directory);
         for (File textFile : textFiles)
-            processDocument(textFile);
+            TextExtractor.processDocument(textFile, map);
         if (keyValueMap.exists()) {
             //no try catch nothing here. I don't want to silently ignore the problem.
             FileOutputStream stream = new FileOutputStream(keyValueMap);
@@ -35,28 +37,4 @@ public class CachedTagProcessor
         }
 
     }
-    private void processDocument(File file) throws IOException {
-        BufferedReader reader = new BufferedReader(new FileReader(file));
-        String line = reader.readLine();
-        while(line !=  null)
-        {
-            StringTokenizer tokenizer = new StringTokenizer(line, " ,();[]");
-
-            while(tokenizer.hasMoreTokens() )
-            {
-                String word = tokenizer.nextToken();
-                TermFileIdentifier identifier = new TermFileIdentifier(word, file);
-                if (map.get(identifier) == null)
-                {
-                    map.put(identifier, 1L);
-                } else {
-                    Long l = map.get(identifier);
-                    map.put(identifier, l + 1);
-                }
-            }
-            line = reader.readLine();
-        }
-        reader.close();
-    }
-
 }
