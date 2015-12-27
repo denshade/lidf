@@ -1,12 +1,11 @@
 package thelaboflieven;
 
+import com.google.common.io.Files;
 import junit.framework.TestCase;
-import thelaboflieven.DocumentSetIdfCalculator;
-import thelaboflieven.IdfCouple;
 
 import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
+import java.nio.file.FileSystem;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
@@ -32,7 +31,7 @@ public class DocumentSetIdfCalculatorTest extends TestCase {
         file2.delete();
     }
 
-    public void testDocumentRetrieval() throws IOException {
+    public void testDocumentRetrieval() throws Exception {
         File file1 = File.createTempFile("test", ".txt");
         FileWriter writer = new FileWriter(file1);
         writer.write("this is a sample a");
@@ -48,12 +47,18 @@ public class DocumentSetIdfCalculatorTest extends TestCase {
         file2.delete();
     }
 
-    public void testgetTagsForFilesInDirectory() throws IOException {
-        File file2 = File.createTempFile("test", ".txt");
+    public void testgetTagsForFilesInDirectory() throws Exception {
+        File file1 = File.createTempFile("test", ".txt");
+        File directory = new File(file1.getParentFile().getAbsolutePath() + "\\testDir");
+        directory.mkdir();
+        File file2 = new File(directory.getAbsolutePath() + "\\test1.txt");
         FileWriter writer = new FileWriter(file2);
         writer.write("example this is another example another example");
         writer.close();
+        Files.copy(new File("test.docx"), new File(directory.getAbsolutePath() + "\\test.docx"));
         DocumentSetIdfCalculator calc = new DocumentSetIdfCalculator();
-        assertNotNull(calc.getTagsForFilesInDirectory(file2.getParentFile()));
+        DocumentSetIdfCalculator.Top3Terms[] tagsForFilesInDirectory = calc.getTagsForFilesInDirectory(directory);
+        assertNotNull(tagsForFilesInDirectory);
+        directory.delete();
     }
 }

@@ -9,7 +9,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.net.URL;
 import org.apache.tika.detect.DefaultDetector;
 import org.apache.tika.detect.Detector;
@@ -21,7 +20,7 @@ import org.apache.tika.parser.Parser;
 import org.apache.tika.sax.BodyContentHandler;
 import org.xml.sax.ContentHandler;
 
-class WordExtractor {
+public class WordExtractor {
     private OutputStream outputstream;
     private ParseContext context;
     private Detector detector;
@@ -52,11 +51,10 @@ class WordExtractor {
         input.close();
     }
 
-    public void getString() {
+    public String getString() {
         //Get the text into a String object
         extractedText = outputstream.toString();
-        //Do whatever you want with this String object.
-        System.out.println(extractedText);
+        return extractedText;
     }
 
 }

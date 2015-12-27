@@ -4,7 +4,6 @@ import thelaboflieven.lidf.TextExtractor;
 
 import java.io.*;
 import java.util.HashMap;
-import java.util.StringTokenizer;
 
 /**
  * Created by Lieven on 8-11-2015.
@@ -24,7 +23,7 @@ public class CachedTagProcessor
             objectStream.close();
             stream.close();
         }
-        File[] textFiles = TextFileFilter.getTextFiles(directory);
+        File[] textFiles = ReadableFileFilter.getTextFiles(directory);
         for (File textFile : textFiles)
             TextExtractor.processDocument(textFile, map);
         if (keyValueMap.exists()) {

@@ -11,7 +11,7 @@ public class DocumentSetIdfCalculator
 
     Map<String, IdfCouple> terms = new HashMap<String, IdfCouple>();
 
-    private class Top3Terms
+    public class Top3Terms
     {
         String filename;
         String term1;
@@ -19,10 +19,14 @@ public class DocumentSetIdfCalculator
         String term3;
     }
 
-    public IdfTfReport getCouples(File[] files) throws IOException {
+    public IdfTfReport getCouples(final File[] files) throws Exception {
         for (File current: files)
         {
-            processDocument(current);
+            if (current.getAbsolutePath().endsWith(".txt")){
+                processTextDocument(current);
+            } else if (current.getAbsolutePath().endsWith(".docx")) {
+                processWordDocument(current);
+            }
         }
         IdfTfReport report = new IdfTfReport();
         report.terms = terms;
@@ -30,8 +34,8 @@ public class DocumentSetIdfCalculator
         return report;
     }
 
-    public Top3Terms[] getTagsForFilesInDirectory(File directory) throws IOException {
-        File[] textFiles = TextFileFilter.getTextFiles(directory);
+    public Top3Terms[] getTagsForFilesInDirectory(File directory) throws Exception {
+        File[] textFiles = ReadableFileFilter.getTextFiles(directory);
         IdfTfReport report = getCouples(textFiles);
         List<Top3Terms> items = new ArrayList<Top3Terms>();
         for (File file : textFiles)
@@ -50,14 +54,14 @@ public class DocumentSetIdfCalculator
         return items.toArray(new Top3Terms[items.size()]);
     }
 
-    public String[] getTagsForFileInDirectory(File file) throws IOException {
+    public String[] getTagsForFileInDirectory(File file) throws Exception {
         File directory = file.getParentFile();
-        File[] textFiles = TextFileFilter.getTextFiles(directory);
+        File[] textFiles = ReadableFileFilter.getTextFiles(directory);
         IdfTfReport report = getCouples(textFiles);
         return report.getTopTermsForDocument(file, 10);
     }
 
-    private void processDocument(File file) throws IOException {
+    private void processTextDocument(File file) throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader(file));
         String line = reader.readLine();
         while(line !=  null)
@@ -81,7 +85,30 @@ public class DocumentSetIdfCalculator
         reader.close();
     }
 
-    public static void main(String[] argv) throws IOException {
+    private void processWordDocument(final File file) throws Exception
+    {
+        thelaboflieven.lidf.WordExtractor extr = new thelaboflieven.lidf.WordExtractor();
+        extr.process(file.getAbsolutePath());
+        for (String line: extr.getString().split("\n")){
+            StringTokenizer tokenizer = new StringTokenizer(line, " ,();[]");
+
+            while(tokenizer.hasMoreTokens() )
+            {
+                String word = tokenizer.nextToken();
+                if (terms.containsKey(word)) {
+                    terms.get(word).bumpFrequency(file);
+                } else {
+                    IdfCouple couple = new IdfCouple();
+                    couple.word = word;
+                    couple.bumpFrequency(file);
+                    terms.put(word, couple);
+                }
+            }
+        }
+    }
+
+
+    public static void main(String[] argv) throws Exception {
         if (argv.length != 1)
         {
             System.out.println("Usage: <directory>");
