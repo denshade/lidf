@@ -10,6 +10,10 @@ public class ReadableFileFilter
     public static List<File> getFilesRecursively(File directory)
     {
         File[] files = directory.listFiles(pathname -> pathname.toString().endsWith(".txt") || pathname.toString().endsWith(".docx"));
+        if (files == null)
+        {
+            return new ArrayList<>();
+        }
         List<File> results = new ArrayList<>();
         results.addAll(Arrays.asList(files));
         for (File file : directory.listFiles(pathname -> pathname.isDirectory()))

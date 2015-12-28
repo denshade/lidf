@@ -9,14 +9,11 @@ import java.util.*;
 public class DocumentSetIdfCalculator
 {
 
-    Map<String, IdfCouple> terms = new HashMap<String, IdfCouple>();
+    Map<String, IdfCouple> terms = new HashMap<>();
 
     public class Top3Terms
     {
-        String filename;
-        String term1;
-        String term2;
-        String term3;
+        public String filename, term1, term2, term3;
     }
 
     public IdfTfReport getCouples(final List<File> files) throws Exception {
@@ -71,6 +68,8 @@ public class DocumentSetIdfCalculator
             while(tokenizer.hasMoreTokens() )
             {
                 String word = tokenizer.nextToken();
+                if (isCommonWord(word)) continue;
+
                 if (terms.containsKey(word)) {
                     terms.get(word).bumpFrequency(file);
                 } else {
@@ -85,6 +84,18 @@ public class DocumentSetIdfCalculator
         reader.close();
     }
 
+    private boolean isCommonWord(String word)
+    {
+        //todo move into dictionary
+        String[] commonWords = new String[] {"de","een", "het", "is", "van", "in", "er", "�", "tussen"};
+
+        for (String commonWord : commonWords)
+        {
+            if (word.equalsIgnoreCase(commonWord))
+                return true;
+        }
+        return false;
+    }
     private void processWordDocument(final File file) throws Exception
     {
         thelaboflieven.lidf.WordExtractor extr = new thelaboflieven.lidf.WordExtractor();
@@ -95,6 +106,7 @@ public class DocumentSetIdfCalculator
             while(tokenizer.hasMoreTokens() )
             {
                 String word = tokenizer.nextToken();
+                if (isCommonWord(word)) continue;
                 if (terms.containsKey(word)) {
                     terms.get(word).bumpFrequency(file);
                 } else {
