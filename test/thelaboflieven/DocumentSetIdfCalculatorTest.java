@@ -43,7 +43,7 @@ public class DocumentSetIdfCalculatorTest extends TestCase {
         writer.close();
         DocumentSetIdfCalculator calc = new DocumentSetIdfCalculator();
         String[] str = calc.getTagsForFileInDirectory(file2);
-        assertEquals("example", str[3]);
+        assertEquals("example", str[2]);
         file1.delete();
         file2.delete();
     }
