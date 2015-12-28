@@ -1,5 +1,6 @@
 package thelaboflieven;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.tika.exception.TikaException;
 
 import java.io.*;
@@ -89,8 +90,11 @@ public class DocumentSetIdfCalculator
     private boolean isCommonWord(String word)
     {
         //todo move into dictionary
-        String[] commonWords = new String[] {"de","een", "het", "is", "van", "in", "er", "�", "tussen"};
+        String[] commonWords = new String[] {
+                "zal", "nog", "als","de","een", "het", "is", "van", "in", "er", "�", "tussen", "u", "null"};
 
+        if (!StringUtils.isAlphanumeric(word))
+            return true;
         for (String commonWord : commonWords)
         {
             if (word.equalsIgnoreCase(commonWord))
