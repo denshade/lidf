@@ -19,7 +19,7 @@ public class DocumentSetIdfCalculator
         String term3;
     }
 
-    public IdfTfReport getCouples(final File[] files) throws Exception {
+    public IdfTfReport getCouples(final List<File> files) throws Exception {
         for (File current: files)
         {
             if (current.getAbsolutePath().endsWith(".txt")){
@@ -30,12 +30,12 @@ public class DocumentSetIdfCalculator
         }
         IdfTfReport report = new IdfTfReport();
         report.terms = terms;
-        report.nrOfDocuments = files.length;
+        report.nrOfDocuments = files.size();
         return report;
     }
 
     public Top3Terms[] getTagsForFilesInDirectory(File directory) throws Exception {
-        File[] textFiles = ReadableFileFilter.getTextFiles(directory);
+        List<File> textFiles = ReadableFileFilter.getFilesRecursively(directory);
         IdfTfReport report = getCouples(textFiles);
         List<Top3Terms> items = new ArrayList<Top3Terms>();
         for (File file : textFiles)
@@ -56,7 +56,7 @@ public class DocumentSetIdfCalculator
 
     public String[] getTagsForFileInDirectory(File file) throws Exception {
         File directory = file.getParentFile();
-        File[] textFiles = ReadableFileFilter.getTextFiles(directory);
+        List<File> textFiles = ReadableFileFilter.getFilesRecursively(directory);
         IdfTfReport report = getCouples(textFiles);
         return report.getTopTermsForDocument(file, 10);
     }

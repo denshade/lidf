@@ -4,13 +4,14 @@ import thelaboflieven.lidf.TextExtractor;
 
 import java.io.*;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by Lieven on 8-11-2015.
  */
 public class CachedTagProcessor
 {
-    private HashMap<TermFileIdentifier, Long> map = new HashMap<TermFileIdentifier, Long>();
+    private HashMap<TermFileIdentifier, Long> map = new HashMap<>();
 
     public void buildMapForDirectory(File directory) throws IOException, ClassNotFoundException {
         File keyValueMap = new File("keyValueMap.cache");
@@ -23,7 +24,7 @@ public class CachedTagProcessor
             objectStream.close();
             stream.close();
         }
-        File[] textFiles = ReadableFileFilter.getTextFiles(directory);
+        List<File> textFiles = ReadableFileFilter.getFilesRecursively(directory);
         for (File textFile : textFiles)
             TextExtractor.processDocument(textFile, map);
         if (keyValueMap.exists()) {

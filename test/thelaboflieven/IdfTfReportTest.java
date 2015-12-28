@@ -4,6 +4,7 @@ import junit.framework.TestCase;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -35,7 +36,7 @@ public class IdfTfReportTest extends TestCase {
         writer.write("example this is another example another example");
         writer.close();
         DocumentSetIdfCalculator calculator = new DocumentSetIdfCalculator();
-        IdfTfReport report = calculator.getCouples(new File[]{file1, file2});
+        IdfTfReport report = calculator.getCouples(Arrays.asList(new File[]{file1, file2}));
         List<IdfCouple> list = report.getPopularTermsForDocument(file2);
         file1.delete();
         file2.delete();

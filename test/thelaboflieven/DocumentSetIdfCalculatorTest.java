@@ -6,6 +6,7 @@ import junit.framework.TestCase;
 import java.io.File;
 import java.io.FileWriter;
 import java.nio.file.FileSystem;
+import java.util.Arrays;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
@@ -25,7 +26,7 @@ public class DocumentSetIdfCalculatorTest extends TestCase {
         writer.write("example this is another example another example");
         writer.close();
         DocumentSetIdfCalculator calc = new DocumentSetIdfCalculator();
-        Map<String, IdfCouple> map = calc.getCouples(new File[]{file1, file2}).terms;
+        Map<String, IdfCouple> map = calc.getCouples(Arrays.asList(new File[]{file1, file2})).terms;
         assertEquals(0.9030, map.get("example").getTfIdf(file2, 2), 0.001);
         file1.delete();
         file2.delete();
