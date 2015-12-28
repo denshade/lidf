@@ -1,5 +1,7 @@
 package thelaboflieven;
 
+import org.apache.tika.exception.TikaException;
+
 import java.io.*;
 import java.util.*;
 
@@ -99,7 +101,12 @@ public class DocumentSetIdfCalculator
     private void processWordDocument(final File file) throws Exception
     {
         thelaboflieven.lidf.WordExtractor extr = new thelaboflieven.lidf.WordExtractor();
-        extr.process(file.getAbsolutePath());
+        try {
+            extr.process(file.getAbsolutePath());
+        } catch(TikaException e)
+        {
+            return;
+        }
         for (String line: extr.getString().split("\n")){
             StringTokenizer tokenizer = new StringTokenizer(line, " ,();[]");
 
