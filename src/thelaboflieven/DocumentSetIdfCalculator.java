@@ -1,5 +1,7 @@
 package thelaboflieven;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.commons.lang.StringUtils;
 import org.apache.tika.exception.TikaException;
 
@@ -19,7 +21,7 @@ public class DocumentSetIdfCalculator
         public String filename, term1, term2, term3;
     }
 
-    public IdfTfReport getCouples(final List<File> files) throws Exception {
+    public IdfTfReport getCouples(final Collection<File> files) throws Exception {
         for (File current: files)
         {
             if (current.getAbsolutePath().endsWith(".txt")){
@@ -35,9 +37,9 @@ public class DocumentSetIdfCalculator
     }
 
     public Top3Terms[] getTagsForFilesInDirectory(File directory) throws Exception {
-        List<File> textFiles = ReadableFileFilter.getFilesRecursively(directory);
+        Collection<File> textFiles = FileUtils.listFiles(directory, TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE);
         IdfTfReport report = getCouples(textFiles);
-        List<Top3Terms> items = new ArrayList<Top3Terms>();
+        List<Top3Terms> items = new ArrayList<>();
         for (File file : textFiles)
         {
             Top3Terms term = new Top3Terms();
@@ -56,7 +58,7 @@ public class DocumentSetIdfCalculator
 
     public String[] getTagsForFileInDirectory(File file) throws Exception {
         File directory = file.getParentFile();
-        List<File> textFiles = ReadableFileFilter.getFilesRecursively(directory);
+        Collection<File> textFiles = FileUtils.listFiles(directory, TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE);
         IdfTfReport report = getCouples(textFiles);
         return report.getTopTermsForDocument(file, 10);
     }
