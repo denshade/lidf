@@ -4,6 +4,8 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.commons.lang.StringUtils;
 import org.apache.tika.exception.TikaException;
+import thelaboflieven.lidf.TextDocumentTerms;
+import thelaboflieven.lidf.WordDocumentTerms;
 
 import java.io.*;
 import java.util.*;
@@ -25,9 +27,9 @@ public class DocumentSetIdfCalculator
         for (File current: files)
         {
             if (current.getAbsolutePath().endsWith(".txt")){
-                processTextDocument(current);
+                TextDocumentTerms.processTextDocument(current, terms);
             } else if (current.getAbsolutePath().endsWith(".docx")) {
-                processWordDocument(current);
+                WordDocumentTerms.processWordDocument(current, terms);
             }
         }
         IdfTfReport report = new IdfTfReport();
@@ -62,76 +64,6 @@ public class DocumentSetIdfCalculator
         IdfTfReport report = getCouples(textFiles);
         return report.getTopTermsForDocument(file, 10);
     }
-
-    private void processTextDocument(File file) throws IOException {
-        BufferedReader reader = new BufferedReader(new FileReader(file));
-        String line = reader.readLine();
-        while(line !=  null)
-        {
-            StringTokenizer tokenizer = new StringTokenizer(line, " ,();[]");
-
-            while(tokenizer.hasMoreTokens() )
-            {
-                String word = tokenizer.nextToken();
-                if (isCommonWord(word)) continue;
-
-                if (terms.containsKey(word)) {
-                    terms.get(word).bumpFrequency(file);
-                } else {
-                    IdfCouple couple = new IdfCouple();
-                    couple.word = word;
-                    couple.bumpFrequency(file);
-                    terms.put(word, couple);
-                }
-            }
-            line = reader.readLine();
-        }
-        reader.close();
-    }
-
-    private boolean isCommonWord(String word)
-    {
-        //todo move into dictionary
-        String[] commonWords = new String[] {
-                "zal", "nog", "als","de","een", "het", "is", "van", "in", "er", "�", "tussen", "u", "null"};
-
-        if (!StringUtils.isAlphanumeric(word))
-            return true;
-        for (String commonWord : commonWords)
-        {
-            if (word.equalsIgnoreCase(commonWord))
-                return true;
-        }
-        return false;
-    }
-    private void processWordDocument(final File file) throws Exception
-    {
-        thelaboflieven.lidf.WordExtractor extr = new thelaboflieven.lidf.WordExtractor();
-        try {
-            extr.process(file.getAbsolutePath());
-        } catch(TikaException e)
-        {
-            return;
-        }
-        for (String line: extr.getString().split("\n")){
-            StringTokenizer tokenizer = new StringTokenizer(line, " ,();[]");
-
-            while(tokenizer.hasMoreTokens() )
-            {
-                String word = tokenizer.nextToken();
-                if (isCommonWord(word)) continue;
-                if (terms.containsKey(word)) {
-                    terms.get(word).bumpFrequency(file);
-                } else {
-                    IdfCouple couple = new IdfCouple();
-                    couple.word = word;
-                    couple.bumpFrequency(file);
-                    terms.put(word, couple);
-                }
-            }
-        }
-    }
-
 
     public static void main(String[] argv) throws Exception {
         if (argv.length != 1)
