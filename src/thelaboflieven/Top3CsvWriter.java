@@ -1,12 +1,16 @@
 package thelaboflieven;
 
 import java.io.*;
+import java.util.logging.Logger;
 
 /**
  * Created by Lieven on 29-12-2015.
  */
 public class Top3CsvWriter
 {
+
+    private static final Logger LOGGER = Logger.getLogger(Top3CsvWriter.class.getName());
+
     public static void write(final File directory, File destinationFile) throws Exception {
 
         DocumentSetIdfCalculator calculator = new DocumentSetIdfCalculator();
@@ -44,14 +48,15 @@ public class Top3CsvWriter
         }
         File directory = new File(args[0]);
         File outputfile = new File(args[1]);
+        LOGGER.info("Writing to file " + outputfile);
         if (!directory.exists()) {
             System.out.println("File not found "+ directory);
             System.exit(3);
         }
         if (outputfile.exists())
         {
-            System.out.println("Output File already exists!"+ directory);
-            System.exit(4);
+            LOGGER.warning("Output File already exists! " + outputfile);
+            //System.exit(4);
         }
         try {
             Top3CsvWriter.write(directory, outputfile);

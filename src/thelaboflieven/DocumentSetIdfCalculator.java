@@ -2,20 +2,21 @@ package thelaboflieven;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.TrueFileFilter;
-import org.apache.commons.lang.StringUtils;
-import org.apache.tika.exception.TikaException;
-import thelaboflieven.lidf.TextDocumentTerms;
-import thelaboflieven.lidf.WordDocumentTerms;
+import thelaboflieven.lidf.parser.DocumentTermsParser;
+import thelaboflieven.lidf.parser.PdfTermsParser;
+import thelaboflieven.lidf.parser.TextDocumentTermsParser;
+import thelaboflieven.lidf.parser.WordDocumentTermsParser;
 
 import java.io.*;
 import java.util.*;
+import java.util.logging.Logger;
 
 /**
  * Created by Lieven on 18/10/2015.
  */
 public class DocumentSetIdfCalculator
 {
-
+    private static final Logger LOGGER = Logger.getLogger(DocumentSetIdfCalculator.class.getName());
     Map<String, IdfCouple> terms = new HashMap<>();
 
     public class Top3Terms
@@ -26,10 +27,22 @@ public class DocumentSetIdfCalculator
     public IdfTfReport getCouples(final Collection<File> files) throws Exception {
         for (File current: files)
         {
-            if (current.getAbsolutePath().endsWith(".txt")){
-                TextDocumentTerms.processTextDocument(current, terms);
-            } else if (current.getAbsolutePath().endsWith(".docx")) {
-                WordDocumentTerms.processWordDocument(current, terms);
+            if (current.isDirectory())
+                continue;
+            String absolutePath = current.getAbsolutePath();
+            DocumentTermsParser[] parsers = new DocumentTermsParser[] {
+                    new TextDocumentTermsParser(),
+                    new WordDocumentTermsParser(),
+                    new PdfTermsParser()
+            };
+            for (DocumentTermsParser parser : parsers)
+            {
+                if (parser.canProcessFile(current))
+                {
+                    LOGGER.info("Parsing textfile: " + absolutePath);
+                    parser.processDocument(current, terms);
+                    break; // as soon as we find the first parser, quit.
+                }
             }
         }
         IdfTfReport report = new IdfTfReport();
@@ -40,6 +53,7 @@ public class DocumentSetIdfCalculator
 
     public Top3Terms[] getTagsForFilesInDirectory(File directory) throws Exception {
         Collection<File> textFiles = FileUtils.listFiles(directory, TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE);
+        LOGGER.info("Found " + textFiles.size() + " files");
         IdfTfReport report = getCouples(textFiles);
         List<Top3Terms> items = new ArrayList<>();
         for (File file : textFiles)
