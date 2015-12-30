@@ -34,21 +34,7 @@ public class PdfTermsParser implements DocumentTermsParser {
             pdDoc = new PDDocument(cosDoc);
             parsedText = pdfStripper.getText(pdDoc);
 
-            StringTokenizer tokenizer = new StringTokenizer(parsedText, " ,();[]");
-
-            while(tokenizer.hasMoreTokens()) {
-                String word = tokenizer.nextToken();
-                if (CommonWords.isCommonWord(word)) continue;
-
-                if (terms.containsKey(word)) {
-                    terms.get(word).bumpFrequency(file);
-                } else {
-                    IdfCouple couple = new IdfCouple();
-                    couple.word = word;
-                    couple.bumpFrequency(file);
-                    terms.put(word, couple);
-                }
-            }
+            TextTermParser.process(file, parsedText, terms);
             pdDoc.close();
             cosDoc.close();
             input.close();

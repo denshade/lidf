@@ -23,23 +23,7 @@ public class WordDocumentTermsParser implements DocumentTermsParser
         {
             return;
         }
-        for (String line: extr.getString().split("\n")){
-            StringTokenizer tokenizer = new StringTokenizer(line, " ,();[]");
-
-            while(tokenizer.hasMoreTokens() )
-            {
-                String word = tokenizer.nextToken();
-                if (CommonWords.isCommonWord(word)) continue;
-                if (terms.containsKey(word)) {
-                    terms.get(word).bumpFrequency(file);
-                } else {
-                    IdfCouple couple = new IdfCouple();
-                    couple.word = word;
-                    couple.bumpFrequency(file);
-                    terms.put(word, couple);
-                }
-            }
-        }
+        TextTermParser.process(file, extr.getString(), terms);
     }
 
     @Override
