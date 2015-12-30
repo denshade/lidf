@@ -18,7 +18,7 @@ import java.util.StringTokenizer;
 public class PdfTermsParser implements DocumentTermsParser {
     @Override
     public void processDocument(final File file, Map<String, IdfCouple> terms) throws Exception {
-        PDFParser parser = null;
+        PDFParser parser;
         PDDocument pdDoc = null;
         COSDocument cosDoc = null;
         PDFTextStripper pdfStripper;
@@ -49,6 +49,8 @@ public class PdfTermsParser implements DocumentTermsParser {
                     terms.put(word, couple);
                 }
             }
+            pdDoc.close();
+            cosDoc.close();
             input.close();
 
         } catch (Exception e) {
