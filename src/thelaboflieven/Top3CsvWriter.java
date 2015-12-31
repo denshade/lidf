@@ -22,12 +22,14 @@ public class Top3CsvWriter
             if (term != null)
             {
                 File file = new File(term.filename);
-                csvWriter.write(term.filename + ";"
-                        + file.length() + ";"
-                        + file.lastModified() + ";"
-                        + nn(term.term1) + ";"
+                String tags = nn(term.term1) + ";"
                         + nn(term.term2) + ";"
-                        + nn(term.term3) + "\n"
+                        + nn(term.term3);
+                if (tags.equals(";;")) tags = "";
+                csvWriter.write(term.filename.replaceAll("\\\\", "\\\\\\\\") + ";"
+                        + file.length() + ";"
+                        + file.lastModified() + ";\""
+                        + tags + "\"\n"
                 );
             }
         }
