@@ -16,7 +16,7 @@ public class CommonWords
     private static Set<String> commonWords = null;
 
     private static void init() throws IOException {
-        commonWords = new TreeSet<>();
+        commonWords = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
         BufferedReader reader = new BufferedReader(new FileReader("commonwords.txt"));
         String line = reader.readLine();
         while (line != null) {
