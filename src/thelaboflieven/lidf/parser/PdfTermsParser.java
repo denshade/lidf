@@ -5,12 +5,10 @@ import org.apache.pdfbox.pdfparser.PDFParser;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.util.PDFTextStripper;
 import thelaboflieven.IdfCouple;
-import thelaboflieven.lidf.CommonWords;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.Map;
-import java.util.StringTokenizer;
 
 /**
  * Created by Lieven on 30-12-2015.

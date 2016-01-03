@@ -2,9 +2,10 @@ package thelaboflieven.lidf;
 
 import org.apache.commons.lang.StringUtils;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -13,28 +14,16 @@ import java.util.TreeSet;
  */
 public class CommonWords
 {
-    private static Set<String> commonWords = null;
+    private static Set<String> commonWords;
 
-    private static void init() throws IOException {
-        commonWords = new TreeSet<>();
-        BufferedReader reader = new BufferedReader(new FileReader("commonwords.txt"));
-        String line = reader.readLine();
-        while (line != null) {
-            commonWords.add(line);
-            line = reader.readLine();
+    static {
+        try {
+            commonWords = new TreeSet<>(Files.readAllLines(Paths.get("commonwords.txt"), StandardCharsets.UTF_8));
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        reader.close();
     }
     public static boolean isCommonWord(String word) throws IOException {
-        if (commonWords == null)
-            init();
-        if (!StringUtils.isAlphanumeric(word))
-            return true;
-
-
-        if (commonWords.contains(word))
-            return true;
-
-        return false;
+        return (!StringUtils.isAlphanumeric(word) || commonWords.contains(word));
     }
 }
