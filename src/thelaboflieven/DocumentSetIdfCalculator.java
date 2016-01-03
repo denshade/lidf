@@ -21,7 +21,8 @@ public class DocumentSetIdfCalculator
 
     public class Top3Terms
     {
-        public String filename, term1, term2, term3;
+        public File file;
+        public String term1, term2, term3;
     }
 
     public IdfTfReport getCouples(final Collection<File> files) throws Exception {
@@ -59,7 +60,7 @@ public class DocumentSetIdfCalculator
         for (File file : textFiles)
         {
             Top3Terms term = new Top3Terms();
-            term.filename = file.getCanonicalPath();
+            term.file = file;
             String[] top3Terms = report.getTopTermsForDocument(file, 3);
             if (top3Terms.length > 0)
                 term.term1 = top3Terms[0];
@@ -95,7 +96,7 @@ public class DocumentSetIdfCalculator
         System.out.println("filename;topterm1;topterm2;topterm3");
         for (Top3Terms term : terms){
             if (term != null)
-                System.out.println(term.filename+";"+term.term1+";"+term.term2+";"+term.term3);
+                System.out.println(term.file.getAbsoluteFile()+";"+term.term1+";"+term.term2+";"+term.term3);
         }
     }
 }
