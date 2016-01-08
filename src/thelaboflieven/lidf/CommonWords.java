@@ -2,6 +2,7 @@ package thelaboflieven.lidf;
 
 import org.apache.commons.lang.StringUtils;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -18,7 +19,14 @@ public class CommonWords
 
     static {
         try {
-            commonWords = new TreeSet<>(Files.readAllLines(Paths.get("commonwords.txt"), StandardCharsets.UTF_8));
+            File file = new File("c:\\cache\\commonwords.txt");
+            if (file.exists())
+            {
+                commonWords = new TreeSet<>(Files.readAllLines(Paths.get("c:\\cache\\commonwords.txt"), StandardCharsets.UTF_8));
+            } else
+            {
+                commonWords = new TreeSet<>();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
