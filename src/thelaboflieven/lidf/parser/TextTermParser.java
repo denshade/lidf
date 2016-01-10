@@ -14,7 +14,7 @@ import java.util.StringTokenizer;
 public class TextTermParser {
 
     public static void process(final File file, String parsedText, Map<String, IdfCouple> terms) throws IOException {
-        StringTokenizer tokenizer = new StringTokenizer(parsedText, " ,();[]");
+        StringTokenizer tokenizer = new StringTokenizer(parsedText, " ,.();[]\n\t");
 
         while(tokenizer.hasMoreTokens()) {
             String word = tokenizer.nextToken();

@@ -13,6 +13,8 @@ public class CommonWordsTest {
     @Test
     public void testIsCommonWord() throws Exception {
         assertTrue(CommonWords.isCommonWord("The"));
+        assertTrue(CommonWords.isCommonWord("this"));
+        assertTrue(CommonWords.isCommonWord("that"));
         assertTrue(CommonWords.isCommonWord("of"));
         assertTrue(CommonWords.isCommonWord(".!"));
         assertFalse(CommonWords.isCommonWord("duck"));
