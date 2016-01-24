@@ -18,6 +18,7 @@ public class TextTermParser {
 
         while(tokenizer.hasMoreTokens()) {
             String word = tokenizer.nextToken();
+            word = word.toLowerCase();
             if (CommonWords.isCommonWord(word)) continue;
 
             if (terms.containsKey(word)) {
